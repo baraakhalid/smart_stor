@@ -1,0 +1,15 @@
+{
+   "login_title" : "Welcome back",
+   "login_subtitle" : "Enter Email & password",
+   "login" : "Login",
+   "email" : "Email",
+   "password" : "Password",
+   "logout_title": "Confirm Logout",
+   "logout_content": "Are you sure",
+   "cofirm" : "Cofirm",
+   "cancel" : "Cancel"
+
+
+
+
+}
