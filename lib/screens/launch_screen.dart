@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_stor/prefs/shared_pref_controller.dart';
 
 
 class LaunchScreen extends StatefulWidget {
@@ -15,8 +16,9 @@ class _LaunchScreenState extends State<LaunchScreen> {
     // TODO: implement initState
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-
-      Navigator.pushReplacementNamed(context, '/on_boarding_screen');
+      String loggedIn = SharedPrefController().getValueFor<bool>( PrefKeys.loggedIn.name) ?? false ? '/bottom_screen':'/on_boarding_screen' ;
+      Navigator.pushReplacementNamed(context, loggedIn);
+      //  Navigator.pushReplacementNamed(context, '/categories_screen');
     });
   }
 

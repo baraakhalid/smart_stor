@@ -1,544 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_stor/core/product_details.dart';
+import 'package:smart_stor/get/products_getx_controller.dart';
+import 'package:smart_stor/model/custom_widget.dart';
+import 'package:smart_stor/widgets/product_widget.dart';
 class ProductsScreen extends StatefulWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+  final int id;
+
+   ProductsScreen({Key? key,required this.id}) : super(key: key);
 
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
+  ProductGetxController controller = Get.put(ProductGetxController());
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero,()async{
+      await ProductGetxController.to.getProduct(id: widget.id);
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Products'),
       ),
-      body: GridView(
-        padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-        scrollDirection:Axis.vertical,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisExtent: 275,
+      body:GetX<ProductGetxController>(
+          builder: (ProductGetxController controller){
+            return controller.loading.value
+                ? Center(child: CircularProgressIndicator())
+                : controller.products.isNotEmpty
+                ? GridView.builder(
+                 itemCount: controller.products.length,
+                  padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                 scrollDirection:Axis.vertical,
+                   gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10.h,
+                     childAspectRatio: 150.w / 180.h,
+                     mainAxisExtent: 275,
 
-        ),
-        children: [
-          InkWell(
-            onTap: (){
-              Future.delayed(Duration(milliseconds: 500),(){
-                Navigator.pushNamed(context, '/product_details_screen');
-              });
+                   ),
+                     itemBuilder: (context, index){
+                   return
+                     productWidget(product: controller.products[index],
+                       // onTap: () => Get.to(
+                       //   ProductDetailsScreen(id: widget.id!,
+                       //       ),
+                       // ),
+                     );
             },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: const Color(0XFFDEDEE0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stack(
-                      children: [
-                        Center(child: Image.asset('images/Group 14.png')),
-                        Align (
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        Align (
-                          alignment: Alignment.topLeft,
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
-
-                ),
-                Text('Nike Jordan 1 Retro Yellow',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-
-                Row(
-                  children: [
-                    const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                    const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                    const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                    const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                    const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                    // SizedBox(width: 20,),
-                    const Spacer(),
-                    const Text('(5.0)',style:TextStyle(fontSize: 10),),
-
-
-                  ],
-                ),
-                const Text('60',style: TextStyle(color: Colors.red),)
-              ],
-            ),
-          ),
-          Column(
-
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 15.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Jacket Pullover SweatHoodie',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:const TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: const TextStyle(color: Colors.red),)
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 14.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Nike Jordan 1 Retro Yellow',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: TextStyle(color: Colors.red),)
-            ],
-          ),
-          Column(
-
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 15.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Jacket Pullover SweatHoodie',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:const TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: const TextStyle(color: Colors.red),)
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 14.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Nike Jordan 1 Retro Yellow',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: TextStyle(color: Colors.red),)
-            ],
-          ),
-          Column(
-
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 15.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Jacket Pullover SweatHoodie',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:const TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: const TextStyle(color: Colors.red),)
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 14.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Nike Jordan 1 Retro Yellow',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: TextStyle(color: Colors.red),)
-            ],
-          ),
-          Column(
-
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0XFFDEDEE0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Stack(
-                    children: [
-                      Center(child: Image.asset('images/Group 15.png')),
-                      Align (
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.favorite_outline, size: 20,color: Colors.red,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Align (
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          child: const Icon(Icons.shopping_cart_outlined, size: 20,),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-
-
-                    ],
-                  ),
-                ),
-
-              ),
-              Text('Jacket Pullover SweatHoodie',style: GoogleFonts.nunito(fontSize: 14,fontWeight: FontWeight.bold),),
-              Row(
-                children: [
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  const Icon(Icons.star,     color: Colors.amber,size: 15,),
-                  // SizedBox(width: 20,),
-                  const Spacer(),
-                  const Text('(5.0)',style:const TextStyle(fontSize: 10),),
-
-
-                ],
-              ),
-              const Text('60',style: const TextStyle(color: Colors.red),)
-            ],
-          ),
+            )
+                : Center(child: Text('No Data'));
+          }
+      )
 
 
 
 
 
 
-        ],
-      ),
+
+
     );
   }
 }
+

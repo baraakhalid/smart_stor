@@ -3,17 +3,16 @@ class SingleDeliveryItem  extends StatelessWidget {
 
   const SingleDeliveryItem ({Key? key,
     required this.name,
-    required this.street,
+    required this.info,
     required this.number,
-    required this. buildingname,
+
     required this. city,
 
   })
    : super(key: key);
   final String name;
-  final String street;
+  final String info;
   final String number;
-  final String buildingname;
   final String city;
 
 
@@ -39,9 +38,8 @@ class SingleDeliveryItem  extends StatelessWidget {
                   Text(city,style: TextStyle(fontSize: 12),),
                   // SizedBox(width: 10,),
 
-                  Text(buildingname ,style: TextStyle(fontSize: 12),),
+                  Text(info ,style: TextStyle(fontSize: 12),),
                   // SizedBox(width: 10,),
-                  Text(street,style: TextStyle(fontSize: 12),),
                   // SizedBox(width: 10,),
 
                 ],

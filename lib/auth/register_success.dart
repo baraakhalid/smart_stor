@@ -32,11 +32,11 @@ class RegisterSuccess extends StatelessWidget {
               primary: Color(0xffFF7750),
             ),
             onPressed: () {
-              Navigator.pushReplacementNamed(context, '/bottom_screen');
+              Navigator.pushReplacementNamed(context, '/login_screen');
             },
 
             child: Text(
-              'Back to home',
+              'Sing In',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white,

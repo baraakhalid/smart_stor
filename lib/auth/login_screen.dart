@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_stor/api/auth_api_controller.dart';
+import 'package:smart_stor/model/api_response.dart';
+import 'package:smart_stor/util/context_extenssion.dart';
 import 'package:smart_stor/util/helpers.dart';
 import 'package:smart_stor/widgets/app_text_field.dart';
 class LoginScreen  extends StatefulWidget {
@@ -103,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> with Helpers{
               ),
               onPressed: () {
                 _performLogin();
-                      Navigator.pushReplacementNamed(context, '/bottom_screen');
+                      // Navigator.pushReplacementNamed(context, '/bottom_screen');
               },
 
               child: Text(
@@ -130,53 +133,6 @@ class _LoginScreenState extends State<LoginScreen> with Helpers{
                 )
               ],
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.end,
-            //   children: [
-            //     TextButton(
-            //       child: const Text('Forgot password?'),
-            //       onPressed: () {
-            //         Navigator.pushNamed(context, '/forgot_password_screen');
-            //       },
-            //       style: TextButton.styleFrom(primary: const Color(0xff586BCA)),
-            //     )
-            //   ],
-            // ),
-            // const Spacer(),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       // print(_emailTextController.text);
-            //       // print(_passwordTextController.text);
-            //       _performLogin();
-            //       Navigator.pushReplacementNamed(context, '/bottom_screen');
-            //
-            //     },
-            //     style: ElevatedButton.styleFrom(
-            //         minimumSize: Size(325, 63.83),
-            //         primary: Color(0xff586BCA),
-            //         shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.circular(16))),
-            //     child: Text(
-            //       'Login',
-            //       style: GoogleFonts.nunito(fontSize: 16 ,color: Color(0xffFFFFFF) ,fontWeight: FontWeight.bold),
-            //     )),
-            // SizedBox(
-            //   height: 20.2,
-            // ),
-            // Row(
-            //
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Text('Don\'t have an account?'  ,style: GoogleFonts.nunito(color: Color(0xFF707070) ,fontSize: 14)  ),
-            //     TextButton(
-            //       onPressed: () =>
-            //           Navigator.pushReplacementNamed(context, '/register_screen'),
-            //       child: Text('Sign Up',style: GoogleFonts.nunito(color: Color(0xff586BCA) ,fontSize: 14)),
-            //       style: TextButton.styleFrom(primary: Color(0xffF897D1)),
-            //     )
-            //   ],
-            // ),
-            // SizedBox(height: 60),
           ],
         ),
       ),
@@ -191,12 +147,19 @@ class _LoginScreenState extends State<LoginScreen> with Helpers{
   }
   bool _checkData(){
     if(_phoneTextController.text.isNotEmpty && _passwordTextController.text.isNotEmpty){
-      return true;}
-    ShowSnackBar(context,message: 'Enter required data ',error: true);
+      return true;
+    }
+    context.ShowSnackBar( message: 'Enter Required Data!', error: true);
+
     return false;
   }
-  void _login(){
-    Navigator.pushReplacementNamed(context, '/home_screen');
+  void _login()async{
+    ApiResponse apiResponse =await AuthApiController().login(mobile: _phoneTextController.text, password: _passwordTextController.text);
+    if(apiResponse.success){
+       Navigator.pushReplacementNamed(context, '/bottom_screen');
+
+    }
+     context.ShowSnackBar(message:apiResponse.message,error: !apiResponse.success);
 
   }
 

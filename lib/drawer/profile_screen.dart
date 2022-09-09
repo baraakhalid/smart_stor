@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_stor/prefs/shared_pref_controller.dart';
 import 'package:smart_stor/widgets/app_text_field.dart';
 import 'package:smart_stor/widgets/app_text_field_cart.dart';
 class ProfileScreen extends StatefulWidget {
@@ -445,3 +446,171 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+// class ProfileScreen extends StatefulWidget {
+//   @override
+//   _ProfileScreenState createState() => _ProfileScreenState();
+// }
+//
+// class _ProfileScreenState extends State<ProfileScreen> {
+//   late TextEditingController nameController;
+//   City? city;
+//   bool isMale = SharedPreferencesController().user!.gender == 'M'? true: false;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     nameController = TextEditingController(text: SharedPreferencesController().user!.name);
+//   }
+//
+//   @override
+//   void dispose() {
+//     nameController.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       appBar: AppBar(
+//         centerTitle: true,
+//         titleTextStyle: TextStyle(color: Colors.white),
+//         title: AppTextWidget(content: 'Profile'),
+//       ),
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: EdgeInsets.all(32.h),
+//           child: Column(
+//             children: [
+//               SizedBox(height: 30.h),
+//               SvgPicture.asset(
+//                 'assets/svg/logo_blue.svg',
+//                 height: 83.h,
+//                 width: 61.w,
+//               ),
+//               SizedBox(height: 80.h),
+//               AppTextField(
+//                 controller: nameController,
+//                 label: 'Name',
+//               ),
+//               SizedBox(height: 20.h),
+//               GestureDetector(
+//                 onTap: () async {
+//                   City selectedCity = await Get.to(CitiesScreen());
+//                   setState(() {
+//                     city = selectedCity;
+//                   });
+//                 },
+//                 child: Container(
+//                     padding: EdgeInsets.symmetric(horizontal: 28.w),
+//                     alignment: AlignmentDirectional.centerStart,
+//                     height: 50.h,
+//                     width: double.infinity,
+//                     decoration: BoxDecoration(
+//                       color: Colors.white,
+//                       boxShadow: [
+//                         BoxShadow(
+//                             color: Color(0xFF999999).withAlpha(25),
+//                             offset: Offset(0, 5),
+//                             blurRadius: 10,
+//                             spreadRadius: 0)
+//                       ],
+//                       borderRadius: BorderRadius.circular(50.h),
+//                       border: Border.all(color: Colors.grey),),
+//                     child: getCityName()),
+//               ),
+//               SizedBox(height: 20.h),
+//               Row(
+//                 children: [
+//                   Expanded(
+//                     child: CheckboxListTile(
+//                       checkColor: Colors.white,
+//                       activeColor: AppColors.PRIMARY_COLOR,
+//                       value: isMale,
+//                       onChanged: (var selected) {
+//                         setState(() {
+//                           isMale = true;
+//                         });
+//                       },
+//                       title: Text('Male'),
+//                     ),
+//                   ),
+//                   VerticalDivider(
+//                     color: Colors.red,
+//                     width: 40.w,
+//                     thickness: 5.h,
+//                   ),
+//                   Expanded(
+//                     child: CheckboxListTile(
+//                       checkColor: Colors.white,
+//                       activeColor: AppColors.PRIMARY_COLOR,
+//                       value: !isMale,
+//                       onChanged: (var selected) {
+//                         setState(() {
+//                           isMale = false;
+//                         });
+//                       },
+//                       title: Text('Female'),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               SizedBox(height: 42.h),
+//               AppElevatedButton(text: 'Update', onPressed: () async {
+//                 await performRegister();
+//               }),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget getCityName() {
+//     if (city == null) {
+//       return AppTextWidget(
+//         content: CitiesGetxController.to.getCityNameById(id: SharedPreferencesController().user!.cityId),
+//         color: Colors.grey,
+//       );
+//     } else {
+//       if (SharedPreferencesController().languageCode == 'ar') {
+//         return AppTextWidget(
+//           content: city!.nameAr,
+//           color: Colors.black,
+//         );
+//       } else {
+//         return AppTextWidget(
+//           content: city!.nameEn,
+//           color: Colors.black,
+//         );
+//       }
+//     }
+//   }
+//
+//
+//   Future<void> performRegister() async {
+//     if (checkData()) {
+//       update();
+//     }
+//   }
+//
+//   bool checkData() {
+//     if (nameController.text.isNotEmpty) {
+//       return true;
+//     }
+//     else{
+//       Helper.showSnackBar(context, text: 'complete fields', error: true);
+//       return false;
+//     }
+//   }
+//
+//   Future<void> update() async {
+//     bool status = await UsersGetxController.to.updateProfile(context: context, name: nameController.text, gender: isMale?'M':'F', city: city == null ? SharedPreferencesController().user!.cityId : city!.id);
+//     if(status){
+//       await SharedPrefController().setCityId(city == null ? SharedPrefController().user!.cityId: city!.id);
+//       await SharedPrefController().setName(nameController.text);
+//       await SharedPrefController().setGender(isMale?'M':'F');
+//     }
+//   }
+//
+// }

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_stor/core/home_screen.dart';
+import 'package:smart_stor/get/address_getx_controller.dart';
+import 'package:smart_stor/model/api_response.dart';
 import 'package:smart_stor/models/city.dart';
 import 'package:smart_stor/models/country.dart';
+import 'package:smart_stor/prefs/shared_pref_controller.dart';
+import 'package:smart_stor/util/context_extenssion.dart';
 import 'package:smart_stor/widgets/app_text_field_cart.dart';
 
 class AddressScreen extends StatefulWidget {
@@ -12,50 +19,43 @@ class AddressScreen extends StatefulWidget {
 }
 
 class _AddressScreenState extends State<AddressScreen> {
-  int? _cityId;
-  late TextEditingController _nameTextController;
-  late TextEditingController _streetTextController;
-  late TextEditingController _buildingNameController;
-  late TextEditingController _phoneController;
-  late TextEditingController _descriptionTextController;
+  late TextEditingController _cityTextController;
+  late TextEditingController _addressTextController;
+  late TextEditingController _infoTextController;
+  late TextEditingController _phoneTextController;
+  AddressGetxController controller = Get.put(AddressGetxController());
+
+  late int? _selectedCityId = 1;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _nameTextController=TextEditingController();
-    _streetTextController=TextEditingController();
-    _buildingNameController=TextEditingController();
-    _phoneController=TextEditingController();
-    _descriptionTextController=TextEditingController();
-
+    _cityTextController = TextEditingController();
+    _addressTextController = TextEditingController();
+    _infoTextController = TextEditingController();
+    _phoneTextController = TextEditingController();
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
-    _nameTextController.dispose();
-    _streetTextController.dispose();
-    _buildingNameController.dispose();
-    _phoneController.dispose();
-    _descriptionTextController.dispose();
+    _cityTextController.dispose();
+    _addressTextController.dispose();
+    _infoTextController.dispose();
+    _phoneTextController.dispose();
+
     super.dispose();
   }
 
 
 
 
-  //Countries List
-
-  final List<City> _cities = <City>[
-    const City(id: 1, title: 'Gaza'),
-    const City(id: 2, title: 'Rafah'),
-
-  ];
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+
       appBar: AppBar(
         title: Text('Add Addresses'),
         leading: IconButton(
@@ -76,64 +76,80 @@ class _AddressScreenState extends State<AddressScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              Text(' name*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
+              Text(' Address*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
               const SizedBox(height: 13,),
               AppTextFieldCart(  keyboardType: TextInputType.text,
-                controller: _nameTextController,),
-              Text('street*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
+                controller: _addressTextController,),
+              Text('info*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
               const SizedBox(height: 13,),
               AppTextFieldCart(  keyboardType: TextInputType.text,
-                controller: _streetTextController,),
-              Text('building name*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
+                controller: _infoTextController,),
+              Text('contact_number*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
               const SizedBox(height: 13,),
               AppTextFieldCart(  keyboardType: TextInputType.number,
-                controller: _buildingNameController,),
-              Text(' description*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
+                controller: _phoneTextController,),
+              Text('city*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
               const SizedBox(height: 13,),
-              AppTextFieldCart(  keyboardType: TextInputType.text,
-                controller: _descriptionTextController,),
-              Text('phone Number*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
-              const  SizedBox(height: 13,),
-              AppTextFieldCart(  keyboardType: TextInputType.number,
-                controller: _phoneController,),
-              Text('City*',style: GoogleFonts.poppins(fontSize: 14,color: Color(0xff9A9A9A)),),
-              const SizedBox(height: 7,),
-              Container(
-                height: 60,
-                width: double.infinity,
-
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Color(0xff8b8b8b)),
-                ),
-                child: DropdownButton<int>(
-                  isExpanded: true,
-                  underline: Divider(color: Colors.transparent,),
-                  hint: const Text('Select City'),
-                  style: GoogleFonts.nunito(
-                    color: Colors.black,
+              DropdownButtonFormField<int>(
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      //<-- SEE HERE
+                      borderSide: BorderSide(
+                        color: Color(0xff8b8b8b),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      //<-- SEE HERE
+                      borderSide: BorderSide(color: Color(0xFFFF7750), width: 1),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
                   ),
-                  onChanged: (int? value) {
-                    setState(() => _cityId = value);
+                  // style: BorderRadius(),
+                  hint: Text(
+                    'Select City',
+                    style: GoogleFonts.nunito(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFFCACACA)),
+                  ),
+                  value: _selectedCityId,
+                  selectedItemBuilder: (BuildContext context) {
+                    return _selectedCityId != null
+                        ? controller.cities
+                        .map((city) => DropdownMenuItem<int>(
+                      child: Text(SharedPrefController()
+                          .getValueFor<String>('language') ==
+                          'en'
+                          ? controller.cities
+                          .firstWhere((element) =>
+                      element.id == _selectedCityId)
+                          .nameEn!
+                          : controller.cities
+                          .firstWhere((element) =>
+                      element.id == _selectedCityId)
+                          .nameAr!),
+                      value: city.id,
+                    ))
+                        .toList()
+                        : [];
                   },
-                  value: _cityId,
-                  items: _cities.map(
-                        (city) {
-                      return DropdownMenuItem<int>(
+                  items: controller.cities
+                      .map((city) => DropdownMenuItem<int>(
+                    child: Text(SharedPrefController()
+                        .getValueFor<String>('language') ==
+                        'en'
+                        ? city.nameEn!
+                        : city.nameAr!),
+                    value: city.id,
+                  ))
+                      .toList(),
+                  onChanged: (int? value) {
+                    setState(() => _selectedCityId = value);
+                  }),
+              const SizedBox(height: 30,),
 
-                        child:Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(city.title),
-                        ),
-                        value: city.id,
-
-                      );
-                    },
-                  ).toList(),
-                  // onChanged: (int ? value){},
-                ),
-              ),
-              SizedBox(height: 42,),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(325, 63.83),
@@ -143,8 +159,17 @@ class _AddressScreenState extends State<AddressScreen> {
                   // primary: Colors.white,
                   primary: Color(0xffFF7750),
                 ),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/cridt_card_screen');
+                onPressed: ()async {
+                    ApiResponse process=await AddressGetxController.to.createAddress(
+                        _addressTextController.text,
+                        _infoTextController.text,
+                        _phoneTextController.text,
+                        int.parse(_selectedCityId.toString()
+                        )
+                    );
+                    context.ShowSnackBar(message: process.message,error: !process.success);
+                    Get.off(HomeScreen());
+                  // Navigator.pushReplacementNamed(context, '/cridt_card_screen');
                 },
 
                 child: Text(

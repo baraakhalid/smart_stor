@@ -29,12 +29,12 @@ class DeliveryDetails  extends StatelessWidget {
           Container(
             height: 160,
             decoration: BoxDecoration(
-              color: Colors.white
+                color: Colors.white
             ),
             child: Column(
               children: [
                 SingleDeliveryItem(name: 'Kharodi'
-                    , street: 'Akshya Nagar 1st', number: '0597700344', buildingname: ' Bangalore-560016', city: 'Gaza'),
+                    , info: 'Akshya Nagar 1st', number: '0597700344',  city: 'Gaza'),
                 SizedBox(height: 20,),
                 Padding(
                   padding: const EdgeInsets.only(left: 63),

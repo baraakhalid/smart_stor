@@ -5,6 +5,7 @@ import 'package:smart_stor/core/favorite_screen.dart';
 import 'package:smart_stor/core/home_screen.dart';
 import 'package:smart_stor/drawer/setting_screen.dart';
 import 'package:smart_stor/models/bn_screen.dart';
+import 'package:smart_stor/util/context_extenssion.dart';
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({Key? key}) : super(key: key);
 
@@ -17,7 +18,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
   final List<BnScreen> _screens = <BnScreen>[
     const BnScreen( widget: HomeScreen()),
     const BnScreen( widget: HomeScreen()),
-    const BnScreen( widget: CategoriesScreen()),
+     BnScreen( widget:  CategoriesScreen()),
     const BnScreen( widget: FavoriteScreen()),
     const BnScreen( widget: SettingScreen()),
   ];
@@ -62,7 +63,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
 
             activeIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined),
-            label: 'Home',
+            label:  'home',
           ),
 
           BottomNavigationBarItem(
